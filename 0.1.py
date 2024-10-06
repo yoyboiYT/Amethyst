@@ -5,6 +5,7 @@
 # This version adds:
 # A fix to the Git situation (outside of this file)
 # This changelog
+# nothing
 
 print("\n")
 
@@ -15,8 +16,9 @@ main_loop = True
 pgm = []
 pgm_edit = False
 pgm_input = ""
-pgm_index = 0
 pgm_run = False
+pgm_index = 0
+pgm_variable = "" # Declare a variable and pull them from the index in this list
 
 # Command handler
 def cmd_handler(cmd: str, isPGM: bool):
@@ -29,7 +31,7 @@ def cmd_handler(cmd: str, isPGM: bool):
             pgm = [] # Reset pgm
             print("x-cell has been reset.")
     elif cmd == "pgm": # Open the program editor
-        if not isPGM: # Restricted command
+        if isPGM == False: # Restricted command
             print("pgm-editor\n")
             pgm = []
             pgm_edit = True
@@ -39,16 +41,21 @@ def cmd_handler(cmd: str, isPGM: bool):
                 if pgm_input == "exit":
                     pgm_edit = False
     elif cmd == "pgm -r": # Run pgm
-        if not isPGM: # Restricted command
-            pgm_index = 0
+        if isPGM == False: # Restricted command
             main_loop = False
             pgm_run = True
     elif cmd == "pgm --view": # View what's in pgm
-        if not isPGM: # Restricted command
+        if isPGM == False: # Restricted command
             print(" ")
             for command in pgm:
                 print(command)
             print(" ")
+    elif cmd.startswith("set "): # Set pgm_variable to the input
+        if isPGM == True: # Only available in the program
+            pgm_variable = cmd.removeprefix("set ") # Set the variable to the input
+    elif cmd == "read": # Print the pgm_variable
+        if isPGM == True: # Only available in the program
+            print(pgm_variable) # Print the pgm_variable
     elif cmd == "quit": # Close ziC
         quit()
     else:
